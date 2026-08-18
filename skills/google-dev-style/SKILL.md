@@ -92,3 +92,7 @@ guideline motivated a change when reviewing.
 **Will not:** reproduce the full guide or word list from memory — link to
 them; restyle text whose project has its own conflicting conventions without
 saying so; change technical meaning to satisfy a style rule.
+
+## Credit
+
+Prompted by [a post from Nate B. Jones](https://x.com/natebjones/status/2089457435459404093).

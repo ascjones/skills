@@ -1,7 +1,14 @@
 # skills
 
-Personal agent skills, usable across Claude Code, Codex, and any other
-harness the [`skills`](https://skills.sh) CLI supports.
+Personal agent skills, usable across Claude Code, Codex, and any other harness
+the [`skills`](https://skills.sh) CLI supports.
+
+## What's here
+
+| Skill | What it does |
+|---|---|
+| [`google-dev-style`](skills/google-dev-style/SKILL.md) | Writes and reviews developer docs in Google developer documentation style. |
+| [`test-cull`](skills/test-cull/SKILL.md) | Sweeps a test suite and removes tests that cannot fail for a reason worth acting on. |
 
 ## Install
 
@@ -9,84 +16,48 @@ harness the [`skills`](https://skills.sh) CLI supports.
 npx skills add ascjones/skills -g -a claude-code -a codex
 ```
 
-Add `-s <name>` (repeatable — it does **not** accept a comma-separated list)
-to install only specific skills.
+To install specific skills, add `-s <name>`. The flag repeats; it does not
+accept a comma-separated list.
 
-Prefer naming agents explicitly over `-a '*'`, which fans out to 50+ agent
-targets and creates directories for tools you don't use.
+Name the agents you use rather than passing `-a '*'`, which fans out to more
+than 50 agent targets and creates directories for tools you don't have.
 
-## Layout
+## Work on a skill
 
-```
-skills/<name>/SKILL.md
-```
-
-Flat, one directory per skill. **Do not nest into category folders.**
-Installed lockfiles record each skill's exact `skillPath`, so moving a skill
-later makes the CLI report it as "deleted upstream" to everyone who has it —
-a silent, confusing break that looks like the skill was withdrawn.
-
-## Authoring
-
-```bash
-cd skills && npx skills init <name>
-```
-
-Creates `skills/<name>/SKILL.md`. See `TEMPLATE.md` for the frontmatter
-fields, including the two optional ones worth knowing:
-
-- `disable-model-invocation: true` — the skill is no longer offered to the
-  model automatically and becomes `/name`-only. Use it for skills you want to
-  fire deliberately rather than have an agent reach for on its own.
-- `argument-hint: "..."` — placeholder text shown for user-invoked skills.
-
-## Local development — `dev-link.sh`
+Each skill is one directory: `skills/<name>/SKILL.md`. To edit a skill and see
+the change in every harness right away:
 
 ```bash
 ./dev-link.sh <name>
 ```
 
-Symlinks `skills/<name>` into `~/.agents/skills/` (the universal directory
-Codex reads) and points `~/.claude/skills/<name>` at that same target. Every
-harness then reads this working copy directly, so **edits are live**: save the
-file and run `/reload-skills` in a running session, or just start a new one.
+The script symlinks the skill into `~/.agents/skills/`, the universal directory
+Codex reads, then points `~/.claude/skills/<name>` at that same target. Every
+harness reads this working copy, so your edits are live: run `/reload-skills`
+in an open session, or start a new one.
 
-### Why not just `npx skills add ./`
+`npx skills add ./` looks like the same thing, but it copies the files instead
+of linking them, once per agent. The copies go stale the moment you edit the
+skill here, and they drift apart when you update one harness and not the other.
 
-`npx skills add` accepts a local path, but it **copies** the files rather than
-linking them. The copy is a snapshot — edit the skill here afterwards and the
-installed version keeps serving the old text until you re-run the install.
-That turns every wording tweak into a reinstall, which is the wrong loop when
-you are iterating on how a skill reads.
-
-It also copies **per agent**. Install for two harnesses and you get two
-independent copies that drift apart the moment one is updated and the other
-isn't. `dev-link.sh` keeps a single source of truth: one directory in this
-repo, symlinked everywhere.
-
-### When to stop using it
-
-`dev-link.sh` is for skills you are actively writing. It deliberately leaves
-no entry in `~/.agents/.skill-lock.json`, so linked skills are invisible to
-`npx skills list` and `npx skills update`.
-
-Once a skill is stable and pushed, install it the normal way so it is tracked
-and updatable:
-
-```bash
-npx skills remove <name> -g -y     # drop the link if one exists
-npx skills add ascjones/skills -g -a claude-code -a codex -s <name>
-```
-
-### Undoing a link
+To remove a link, delete the two symlinks. The skill stays in this repo.
 
 ```bash
 rm ~/.agents/skills/<name> ~/.claude/skills/<name>
 ```
 
-Both are symlinks, so this removes only the links — the skill itself stays in
-this repo.
+## Track a finished skill
 
-## Credits
+A linked skill leaves no entry in `~/.agents/.skill-lock.json`, so
+`npx skills list` and `npx skills update` can't see it. Once a skill settles
+down, install it the normal way:
 
-Inspired by [a post from Nate B. Jones](https://x.com/natebjones/status/2089457435459404093).
+```bash
+npx skills remove <name> -g -y
+npx skills add ascjones/skills -g -a claude-code -a codex -s <name>
+```
+
+## Authoring conventions
+
+[AGENTS.md](AGENTS.md) holds the conventions for writing a skill in this repo —
+layout rules, frontmatter, and house style. `CLAUDE.md` is a symlink to it.
