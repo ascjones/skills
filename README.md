@@ -86,3 +86,7 @@ rm ~/.agents/skills/<name> ~/.claude/skills/<name>
 
 Both are symlinks, so this removes only the links — the skill itself stays in
 this repo.
+
+## Credits
+
+Inspired by [a post from Nate B. Jones](https://x.com/natebjones/status/2089457435459404093).
