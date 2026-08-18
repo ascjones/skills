@@ -23,7 +23,8 @@ Style Guide for anything not covered.
   that reads clear and friendly.
 
 Not for: marketing copy, creative writing, or agent-facing text where
-machine-parseability beats readability (use `asd-ste100` for that).
+machine-parseability beats readability — ASD-STE100 simplified English is the
+better standard there (the `asd-ste100` skill, if you have it installed).
 
 ## Voice and tone
 
