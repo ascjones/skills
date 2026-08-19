@@ -37,8 +37,8 @@ harness reads this working copy, so your edits are live: run `/reload-skills`
 in an open session, or start a new one.
 
 `npx skills add ./` looks like the same thing, but it copies the files instead
-of linking them, once per agent. The copies go stale the moment you edit the
-skill here, and they drift apart when you update one harness and not the other.
+of linking them to this repo. The copy is a snapshot, so it goes stale as soon
+as you edit the skill here, and every wording change becomes a reinstall.
 
 To remove a link, delete the two symlinks. The skill stays in this repo.
 
