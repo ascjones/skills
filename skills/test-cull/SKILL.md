@@ -63,9 +63,3 @@ dedupe keys, watermarks, timeout and abort classification.
 The test asserts a number, not a layout. Example: a very small quantity shows
 its true value, and not zero. This test shows that the math is correct. Cut the
 layout tests. Keep the number tests.
-
-## More
-
-- Cut group (c) and you remove real coverage. `PROBES.md` tells you how to
-  replace it.
-- `PROCEDURE.md` gives the steps for a sweep, and the errors to avoid.
