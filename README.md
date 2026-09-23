@@ -60,4 +60,4 @@ npx skills add ascjones/skills -g -a claude-code -a codex -s <name>
 ## Authoring conventions
 
 [AGENTS.md](AGENTS.md) holds the conventions for writing a skill in this repo —
-layout rules, frontmatter, and house style. `CLAUDE.md` is a symlink to it.
+layout rules, frontmatter, and house style. Claude Code reads it directly.
