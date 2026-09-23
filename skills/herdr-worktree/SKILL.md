@@ -1,26 +1,27 @@
 ---
 name: herdr-worktree
-description: "Launch a new herdr worktree workspace under a repo, optionally seeded from a GitHub issue, with an agent started and prompted automatically. Use when the user says 'new worktree for issue N', 'spin up a worktree in akku to do X', 'start an agent on branch Y', or wants an isolated workspace for a task."
-argument-hint: "[repo: akku|ledger|path] [issue number or branch-name] [optional task prompt] [kind:codex]"
+description: "Launch a new herdr worktree workspace under a repo, seeded from a tsk task or a GitHub issue, with an agent started and prompted automatically. Use when the user says 'start T12 in a worktree', 'new worktree for issue N', 'spin up a worktree in akku to do X', or wants an isolated workspace with an agent already working on a task."
+argument-hint: "[T12 | issue number | branch-name] [repo: akku|ledger|path] [optional extra instruction] [kind:codex]"
 ---
 
 # herdr-worktree — spin up a task worktree with a primed agent
 
 Creates a git worktree as a **sibling workspace grouped under the repo's workspace**, then starts an agent in it and hands it the task prompt.
 
-Requires: running inside herdr (`HERDR_ENV=1`), herdr >= 0.7.5 (`agent start` / `agent prompt`), and `gh` for issue lookup.
+Requires: running inside herdr (`HERDR_ENV=1`), herdr >= 0.7.5 (`agent start` / `agent prompt`), `tsk` for task lookup, and `gh` for issue lookup.
 
 ## Arguments
 
 Free-form. Extract:
 
-- **repo** — `akku`, `ledger`, or a path. Resolve to a repo root: use the path if given, else `~/code/<name>`. Confirm with `git -C <root> rev-parse --show-toplevel`.
+- **tsk task** (optional) — `T12`, `t12`, or `12`. This also resolves the repo: the task's `project` is the repo root.
+- **repo** — `akku`, `ledger`, or a path. Resolve to a repo root: use the path if given, else `~/code/<name>`. Confirm with `git -C <root> rev-parse --show-toplevel`. A tsk task supplies this, so ask only when neither is given.
 - **issue number** (optional) — e.g. `79`, `#79`, `issue 79`.
 - **branch name** (optional) — explicit branch; otherwise derive one.
 - **prompt** (optional) — the task text for the agent. If an issue is given and no prompt, build the prompt from the issue.
 - **agent kind** (optional) — default `claude`. Also `codex`, `gemini`, etc.
 
-If repo is ambiguous or missing, ask. Everything else has a sane default.
+A task and an issue are alternative seeds — take whichever the user named. If the repo is still ambiguous or missing, ask. Everything else has a sane default.
 
 ## Steps
 
@@ -34,14 +35,28 @@ herdr worktree list --cwd <repo-root> --json
 
 Take `result.source.source_workspace_id` as `<SRC>`, and check `result.worktrees[]` for whether the branch already exists.
 
-### 2. If an issue number was given, fetch it
+### 2. Fetch the seed — a tsk task or a GitHub issue
+
+**A tsk task:**
+
+```bash
+tsk list T<N> --json
+```
+
+Returns one object with `project` (absolute repo root), `title`, `notes`, `steps`, `thread`, and `status`. Derive:
+- repo root: `project` directly. A task with a null `project` sits on the desk and names no repo — ask which one.
+- branch: `t<N>-<slug>` (slug = title lowercased, non-alphanumerics → `-`, trimmed, max ~4 words).
+- label: `T<N>: <title>`.
+- prompt: title + notes + any unticked steps, and tell the agent the task is `T<N>` on the tsk board so it can tick steps and hand back at `review`.
+
+**A GitHub issue:**
 
 ```bash
 gh issue view <N> --repo <owner/repo> --json number,title,body,url
 ```
 
 Derive:
-- branch: `issue-<N>-<slug>` (slug = title lowercased, non-alphanumerics → `-`, trimmed, max ~4 words) — matches the existing convention (`issue-47-extrinsic-fees`).
+- branch: `issue-<N>-<slug>` (same slug rule) — matches the existing convention (`issue-47-extrinsic-fees`).
 - label: `#<N>: <title>` (workspace label; free-form, spaces fine).
 - prompt: issue title + body + URL, plus any extra instruction the user gave.
 
@@ -94,9 +109,17 @@ For long prompts, keep it one argument; embedded newlines are fine. If `--wait` 
 herdr agent read <AGENT_NAME> --source recent --lines 40
 ```
 
-### 6. Report back
+### 6. If the seed was a tsk task, mark it started
 
-Give the user: workspace id + label, branch, worktree path, agent name, and the one-liner to jump there:
+```bash
+tsk status T<N> start
+```
+
+This is the one status the skill sets. Leave `review` to the agent when its work is done, and `done` to the user.
+
+### 7. Report back
+
+Give the user: workspace id + label, branch, worktree path, agent name, the task or issue it was seeded from, and the one-liner to jump there:
 
 ```bash
 herdr workspace focus <WS>     # or: herdr agent focus <AGENT_NAME>
@@ -110,7 +133,27 @@ herdr workspace focus <WS>     # or: herdr agent focus <AGENT_NAME>
 - **Agents may go `blocked` after being moved** between workspaces — they're waiting on input, not broken.
 - **Cleanup:** `herdr worktree remove --workspace <WS> [--force]`. Never `rm -rf` a worktree dir; git tracks its metadata (`git worktree remove <path>` / `git worktree prune` if it was deleted).
 
-## Example
+## Examples
+
+> "start T12 in a worktree"
+
+```bash
+tsk list T12 --json          # -> project=/Users/andrew/code/akku, title, notes, steps
+herdr worktree list --cwd ~/code/akku --json                    # -> SRC=w4
+git -C ~/code/akku fetch origin
+herdr worktree create --workspace w4 --branch t12-noisy-references \
+  --label "T12: smarter handling of noisy references" --base origin/main --no-focus --json
+herdr agent start t12 --kind claude --pane <PANE> --timeout 60000
+herdr agent prompt t12 "Work on tsk task T12: <title>
+
+<notes>
+
+Steps:
+- <unticked step>
+
+This is T12 on the tsk board. Tick steps with 'tsk steps T12 toggle <short_id>' as you go, and set 'tsk status T12 review' when the work is ready to look at." --wait --until working
+tsk status T12 start
+```
 
 > "new worktree in akku for issue 79, tell it to export dividends to CSV"
 
