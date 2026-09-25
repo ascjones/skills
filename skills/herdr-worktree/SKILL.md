@@ -47,7 +47,7 @@ Returns one object with `project` (absolute repo root), `title`, `notes`, `steps
 - repo root: `project` directly. A task with a null `project` sits on the desk and names no repo — ask which one.
 - branch: `t<N>-<slug>` (slug = title lowercased, non-alphanumerics → `-`, trimmed, max ~4 words).
 - label: `T<N>: <title>`.
-- prompt: title + notes + any unticked steps, and tell the agent the task is `T<N>` on the tsk board so it can tick steps and hand back at `review`.
+- prompt: title + notes + any unticked steps, and tell the agent the task is `T<N>` on the tsk board so it can tick steps, hand back at `review`, and ask whether to close the task if its PR merges while it is still running.
 
 **A GitHub issue:**
 
@@ -151,7 +151,7 @@ herdr agent prompt t12 "Work on tsk task T12: <title>
 Steps:
 - <unticked step>
 
-This is T12 on the tsk board. Tick steps with 'tsk steps T12 toggle <short_id>' as you go, and set 'tsk status T12 review' when the work is ready to look at." --wait --until working
+This is T12 on the tsk board. Tick steps with 'tsk steps T12 toggle <short_id>' as you go, and set 'tsk status T12 review' when the work is ready to look at. If the PR merges while you're still running, ask whether to close T12." --wait --until working
 tsk status T12 start
 ```
 
