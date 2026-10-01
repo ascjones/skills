@@ -8,7 +8,8 @@ the [`skills`](https://skills.sh) CLI supports.
 | Skill | What it does |
 |---|---|
 | [`google-dev-style`](skills/google-dev-style/SKILL.md) | Writes and reviews developer docs in Google developer documentation style. |
-| [`test-cull`](skills/test-cull/SKILL.md) | Sweeps a test suite and removes tests that cannot fail for a reason worth acting on. |
+| [`herdr-worktree`](skills/herdr-worktree/SKILL.md) | Launches a herdr worktree with an agent already working on a tsk task or GitHub issue. |
+| [`test-audit`](skills/test-audit/SKILL.md) | Gates new tests, and removes tests that cannot fail for a reason worth acting on. |
 
 ## Install
 
