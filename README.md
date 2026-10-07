@@ -8,6 +8,7 @@ the [`skills`](https://skills.sh) CLI supports.
 | Skill | What it does |
 |---|---|
 | [`google-dev-style`](skills/google-dev-style/SKILL.md) | Writes and reviews developer docs in Google developer documentation style. |
+| [`herdr-chef`](skills/herdr-chef/SKILL.md) | Makes one session the coordinator for a repo, named `<project>-chef` in herdr and in Claude Code or Codex. |
 | [`herdr-worktree`](skills/herdr-worktree/SKILL.md) | Launches a herdr worktree with an agent already working on a tsk task or GitHub issue. |
 | [`test-audit`](skills/test-audit/SKILL.md) | Gates new tests, and removes tests that cannot fail for a reason worth acting on. |
 
