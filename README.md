@@ -9,7 +9,7 @@ the [`skills`](https://skills.sh) CLI supports.
 |---|---|
 | [`google-dev-style`](skills/google-dev-style/SKILL.md) | Writes and reviews developer docs in Google developer documentation style. |
 | [`herdr-worktree`](skills/herdr-worktree/SKILL.md) | Launches a herdr worktree with an agent already working on a tsk task or GitHub issue. |
-| [`tsk-kitchen`](skills/tsk-kitchen/SKILL.md) | House rules for the tsk board by role: the chef coordinates from the main checkout (and this skill makes a session the chef), a cook works one task in a worktree. |
+| [`kitchen`](skills/kitchen/SKILL.md) | House rules for the tsk board by role: the chef coordinates from the main checkout (and this skill makes a session the chef), a cook works one task in a worktree. |
 | [`test-audit`](skills/test-audit/SKILL.md) | Gates new tests, and removes tests that cannot fail for a reason worth acting on. |
 
 ## Install

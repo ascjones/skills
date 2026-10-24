@@ -1,10 +1,10 @@
 ---
-name: tsk-kitchen
+name: kitchen
 description: House rules for working the tsk board, by role. The chef coordinates a repo from its main checkout; a cook works one task in its own worktree. Load before your first `tsk` command in a session, alongside `tsk-cli`, and when the user asks to make a session the chef or set up a chef for a repo.
 argument-hint: "[chef: this | <pane-or-agent> | new] [repo path] [kind:codex]"
 ---
 
-# tsk-kitchen
+# kitchen
 
 House rules that sit on top of the tsk-owned skills (`tsk-cli`, `tsk-coordinator`). Where
 they differ, these rules win.
