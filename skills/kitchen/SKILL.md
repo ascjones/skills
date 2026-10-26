@@ -34,6 +34,13 @@ fenced blocks; tables and links stay raw) and its peek shows the first five line
 - Follow with short `##` sections of bullets; keep any paragraph to three lines.
 - Put history in review and block records, and checklists in steps.
 
+**Pass multi-line notes from a file.** For `tsk add -n`, `tsk edit --notes`, or
+`--append-notes` with more than one line, first write the notes to a Markdown file in your
+scratchpad (`mktemp` where you have none), then pass the file's contents:
+`tsk edit T12 --notes="$(cat "$file")"`. The file keeps line breaks, headings and lists
+intact, so keep multi-line text out of the command itself. Use the `=` form: notes that open
+with `-` are otherwise read as a flag.
+
 **Close only on a yes.** When you believe a task you worked on is complete (its PR merged, or the
 outcome verified), ask the user in one line: `T12 looks complete: <evidence>. Mark it done?`
 Set `tsk status T12 done` only on a yes. Until then it stays at `review`; `done` is the
