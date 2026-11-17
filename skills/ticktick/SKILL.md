@@ -36,8 +36,7 @@ Dates are `yyyy-MM-ddTHH:mm:ss+0000` (UTC). Convert from the user's time zone.
 
 ## Known gaps
 
-- `task search --due-from/--due-to` returned API 500 as of Sep 2026. Use `task filter --start-date/--end-date` instead.
-- Filtering by project through `task filter --projects` returned empty for lists that `project data` also showed empty, so verify with `project data <pid> --json` if a result looks wrong.
+- `task search --due-from/--due-to` is unreliable: it has returned API 500, and `[]` where `task filter` found the tasks. Use `task filter --start-date/--end-date` instead.
 - No "today" verb. Compute the UTC window for today and use `task filter`.
 
 ## Conventions
